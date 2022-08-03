@@ -144,11 +144,13 @@ button {
   background: url(../img/playbar_sprite.png) no-repeat 0 9999px;
 }
 
+/* 歌词部分样式放在公共里面 */
 .lyric-class .ant-message-notice-content {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
   bottom: 50px;
-  background-color: rgba(0, 0, 0, .5);
-  color: #fff;
+  background-color: rgba(0, 0, 0, .6);
+    color: rgb(222, 222, 222);
+    border-radius: 20px;
 }

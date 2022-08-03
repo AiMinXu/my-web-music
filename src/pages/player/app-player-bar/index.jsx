@@ -7,9 +7,10 @@ import {
   getSongDetailAction,
   changeSequenceAction,
   changeCurrentIndexAndSongAction,
-
+  changeCurrentLyricIndexAction
 } from '../store/actionCreators';
 //路由+组件（第三方组件）+样式
+import { message } from 'antd'
 import { NavLink } from 'react-router-dom';
 import { Slider } from 'antd';
 import {
@@ -27,9 +28,11 @@ const XAMAppPlayerBar = memo(() => {
   const [isChanging, setIsChanging] = useState(false)//监听当前是否正在发生改变
   const [isPlaying, setIsPlaying] = useState(false)//设置当前正在 播放状态
   //redux的hooks
-  const { currentSong, sequence } = useSelector(state => ({
+  const { currentSong, sequence, lyricList, currentLyricIndex } = useSelector(state => ({
     currentSong: state.getIn(['player', 'currentSong']),//immutable()
-    sequence: state.getIn(['player', 'sequence'])//immutable()
+    sequence: state.getIn(['player', 'sequence']),//immutable()
+    lyricList: state.getIn(['player', 'lyricList']),
+    currentLyricIndex: state.getIn(['player', 'currentLyricIndex'])
   }), shallowEqual)
   const dispatch = useDispatch()
 
@@ -66,10 +69,30 @@ const XAMAppPlayerBar = memo(() => {
   }, [isPlaying])
 
   const timeUpdate = (e) => {
+    const currentTime = e.target.currentTime
     if (!isChanging) {//判断是否在改变，不在改变则设置进度
       //获取当前播放的时间--秒
-      setCurrentTime(e.target.currentTime * 1000)//转化为毫秒
-      setProgress(currentTime / duration * 100)
+      setCurrentTime(currentTime * 1000)//转化为毫秒
+      setProgress(currentTime * 1000 / duration * 100)
+    }
+    //在事件变化时获取当歌词
+    let i = 0
+    for (; i < lyricList.length; i++) {
+      let lyricItem = lyricList[i]
+      if (currentTime * 1000 < lyricItem.time) {
+        break
+      }
+    }
+    //优化判断歌词在当前index时进行打印，切换时再进行打印
+    if (currentLyricIndex !== i - 1) {
+      dispatch(changeCurrentLyricIndexAction(i - 1))
+      const content = lyricList[i - 1] && lyricList[i - 1].content//判断当前 是否有 内容再进行取值
+      message.open({
+        key: "lyric",
+        content: content,
+        duration: 0,
+        className: "lyric-class"
+      })
     }
   }
   const handleMusicEnded = (e) => {

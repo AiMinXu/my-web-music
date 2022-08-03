@@ -27,6 +27,10 @@ export const changeSequenceAction = (sequence) => ({
   sequence
 })
 
+export const changeCurrentLyricIndexAction = (index) => ({
+  type: actionTypes.CHANGE_CURRENT_LYRIC_INDEX,
+  index
+})
 export const changeCurrentIndexAndSongAction = (tag) => {
   //返回函数是为了拿到dispatch和getState
   return (dispatch, getState) => {
