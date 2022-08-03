@@ -5,7 +5,9 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { getSizeImage, formatDate, getPlaySong } from '@/utils/format-utils'
 import {
   getSongDetailAction,
-  changeSequenceAction
+  changeSequenceAction,
+  changeCurrentIndexAndSongAction,
+
 } from '../store/actionCreators';
 //路由+组件（第三方组件）+样式
 import { NavLink } from 'react-router-dom';
@@ -40,6 +42,12 @@ const XAMAppPlayerBar = memo(() => {
   useEffect(() => {
     //第一次需要设置src，当src改变时再改变
     audioRef.current.src = getPlaySong(currentSong.id)
+    //根据返回的promise值进行设置切换下一首是否播放（请求不到的歌曲）
+    audioRef.current.play().then(res => {
+      setIsPlaying(true);
+    }).catch(err => {
+      setIsPlaying(false);
+    });
   }, [currentSong])
   //other
   const picUrl = (currentSong.al && currentSong.al.picUrl) || ''//判断picUrl是否有值，并给默认值
@@ -64,12 +72,28 @@ const XAMAppPlayerBar = memo(() => {
       setProgress(currentTime / duration * 100)
     }
   }
+  const handleMusicEnded = (e) => {
+    //判断状态
+    if (sequence === 2) {//单曲循环的时候
+      //播放时长设置为0，并调用播放方法
+      audioRef.current.currentTime = 0
+      audioRef.current.play()
+    } else {
+      dispatch(changeCurrentIndexAndSongAction(1))
+    }
+  }
   const changeSequences = () => {
     let currentSequence = sequence + 1
     // if(currentSequence === 3) currentSequence = 0
     if (currentSequence > 2) { currentSequence = 0 }
     dispatch(changeSequenceAction(currentSequence))
   }
+  //传过来标记，利用标记进行判断点击为上一首还是下一首
+  const changeMusic = (tag) => {
+    dispatch(changeCurrentIndexAndSongAction(tag))
+  }
+
+
   //useCallback()使用---当把回调函数传入自定义组件中，为避免发生不断重绘问题，需用useCallback()，注意依赖项
   const sliderChange = useCallback((value) => {
     setIsChanging(true)//改变时设置为true
@@ -94,9 +118,9 @@ const XAMAppPlayerBar = memo(() => {
       <div className='content wrap-v2'>
         {/* 传入isPlaying属性进行当前状态判断，设置不同背景图  */}
         <Control isPlaying={isPlaying}>
-          <button className='sprite_player prev'></button>
+          <button className='sprite_player prev' onClick={e => changeMusic(-1)}></button>
           <button className='sprite_player play' onClick={e => palyMusic()}></button>
-          <button className='sprite_player next' ></button>
+          <button className='sprite_player next' onClick={e => changeMusic(1)}></button>
         </Control>
         <PlayInfo>
           <div className='image'>
@@ -138,7 +162,7 @@ const XAMAppPlayerBar = memo(() => {
           </div>
         </Operator>
       </div>
-      <audio ref={audioRef} onTimeUpdate={timeUpdate} />
+      <audio ref={audioRef} onTimeUpdate={timeUpdate} onEnded={handleMusicEnded} />
     </PlaybarWrapper>
   )
 })

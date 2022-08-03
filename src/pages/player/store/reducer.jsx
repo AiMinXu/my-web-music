@@ -224,6 +224,10 @@ function reducer(state = defaultState, action) {
       return state.set('palyList', action.playList)
     case actionTypes.CHANGE_SEQUENCE:
       return state.set('sequence', action.sequence)
+    case actionTypes.CHANGE_LYRIC_LIST:
+      return state.set('lyricList', action.lyricList)
+    case actionTypes.CHANGE_CURRENT_LYRIC_INDEX:
+      return state.set('lyricIndex', action.lyricIndex)
     default:
       return state
   }

@@ -1,5 +1,5 @@
-import React, { memo, useEffect } from 'react'
-
+import React, { memo } from 'react'
+// import { useEffect } from 'react'
 // import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 // import { getTopList } from '@/services/recommend'
 import XAMThemeHeaderRCM from '@/components/theme-header-rcm'
