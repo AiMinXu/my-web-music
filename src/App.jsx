@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, Suspense } from 'react'
 //导入Provider
 import { Provider } from 'react-redux'
 //导入store
@@ -20,7 +20,9 @@ const App = memo(() => {
       {/* //HashRouter包裹 */}
       <HashRouter>
         <XAMAppHeader />
-        {renderRoutes(routes)}
+        <Suspense fallback={<div>page loading</div>}>
+          {renderRoutes(routes)}
+        </Suspense>
         <XAMAppFooter />
         <XAMAppPlayerBar />
       </HashRouter>

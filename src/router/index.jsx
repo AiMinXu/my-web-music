@@ -1,17 +1,31 @@
 import React from "react"
 import { Redirect } from "react-router-dom"
-//导入路由页面配置组件
-import XAMDiscover from "../pages/discover"
-import XAMRecommend from '../pages/discover/children-pages/recommend'
-import XAMAlbum from '../pages/discover/children-pages/album'
-import XAMArtist from '../pages/discover/children-pages/artist'
-import XAMDjradio from '../pages/discover/children-pages/djradio'
-import XAMRanking from '../pages/discover/children-pages/ranking'
-import XAMSongs from '../pages/discover/children-pages/songs'
-import XAMPlayer from '../pages/player/index'
 
-import XAMMine from "../pages/mine"
-import XAMFriend from "../pages/friend"
+//路由懒加载 React.lazy()
+const XAMDiscover = React.lazy(() => import("@/pages/discover"));
+const XAMRecommend = React.lazy(_ => import("../pages/discover/children-pages/recommend"));
+const XAMRanking = React.lazy(_ => import("../pages/discover/children-pages/ranking"));
+const XAMSongs = React.lazy(_ => import("../pages/discover/children-pages/songs"));
+const XAMDjradio = React.lazy(_ => import("../pages/discover/children-pages/djradio"));
+const XAMArtist = React.lazy(_ => import("../pages/discover/children-pages/artist"));
+const XAMAlbum = React.lazy(_ => import("../pages/discover/children-pages/album"));
+const XAMPlayer = React.lazy(_ => import("../pages/player"));
+
+const XAMFriend = React.lazy(_ => import("../pages/friend"));
+const XAMMine = React.lazy(_ => import("../pages/mine"));
+
+// //导入路由页面配置组件
+// import XAMDiscover from "../pages/discover"
+// import XAMRecommend from '../pages/discover/children-pages/recommend'
+// import XAMAlbum from '../pages/discover/children-pages/album'
+// import XAMArtist from '../pages/discover/children-pages/artist'
+// import XAMDjradio from '../pages/discover/children-pages/djradio'
+// import XAMRanking from '../pages/discover/children-pages/ranking'
+// import XAMSongs from '../pages/discover/children-pages/songs'
+// import XAMPlayer from '../pages/player/index'
+
+// import XAMMine from "../pages/mine"
+// import XAMFriend from "../pages/friend"
 //配置路由
 //path与component一一对应
 const routes = [
